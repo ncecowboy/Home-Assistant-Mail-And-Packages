@@ -48,6 +48,8 @@ Please note that files stored in the `www` Home Assistant folder are [publicly a
 
 [Supported Shipper Requirements](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki/Supported-Shipper-Requirements)
 
+[API Integration Options](docs/API_INTEGRATION_OPTIONS.md) - Information about carrier APIs vs. email integration
+
 ## Template and Examples
 [USPS Informed Delivery Image](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki/USPS-Informed-Delivery-Image)
 
