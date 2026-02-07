@@ -234,3 +234,37 @@ async def test_async_on_demand_update(
             image = await cameras[0].async_on_demand_update()
 
         assert image is None
+
+
+async def test_access_tokens_initialization(
+    hass,
+    mock_imap_no_email,
+    mock_osremove,
+    mock_osmakedir,
+    mock_listdir,
+    mock_update_time,
+    mock_copy_overlays,
+    mock_hash_file,
+    mock_getctime_today,
+    mock_update,
+):
+    """Test that access_tokens attribute is properly initialized."""
+    with patch("os.path.isfile", return_value=True), patch(
+        "os.access", return_value=True
+    ):
+        entry = MockConfigEntry(
+            domain=DOMAIN,
+            title="imap.test.email",
+            data=FAKE_CONFIG_DATA,
+        )
+
+        entry.add_to_hass(hass)
+        assert await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+
+        cameras = hass.data[DOMAIN][entry.entry_id][CAMERA]
+        # Verify that access_tokens attribute exists and is a list
+        for camera in cameras:
+            assert hasattr(camera, "access_tokens")
+            assert isinstance(camera.access_tokens, list)
+            assert camera.access_tokens == []
