@@ -38,7 +38,7 @@
                     "amazon_days": "Days back to check for Amazon emails",
                     "custom_img": "Use custom 'no image' image?"
                 },
-                "description": "Finish the configuration by customizing the following based on your email structure and Home Assistant installation.\n\nFor details on the Mail and Packages integration options review the configuration, templates, and automations section on GitHub (see documentation link).",
+                "description": "Finish the configuration by customizing the following based on your email structure and Home Assistant installation.\n\nFor details on the Mail and Packages integration options, see the documentation linked in the integration details.",
                 "title": "Mail and Packages (Step 2 of 2)"
             },
             "options_3": {
@@ -87,7 +87,7 @@
                     "amazon_days": "Days back to check for Amazon emails",
                     "custom_img": "Use custom 'no image' image?"
                 },
-                "description": "Finish the configuration by customizing the following based on your email structure and Home Assistant installation.\n\nFor details on the Mail and Packages integration options review the configuration, templates, and automations section on GitHub (see documentation link).",
+                "description": "Finish the configuration by customizing the following based on your email structure and Home Assistant installation.\n\nFor details on the Mail and Packages integration options, see the documentation linked in the integration details.",
                 "title": "Mail and Packages (Step 2 of 2)"
             },
             "options_3": {
