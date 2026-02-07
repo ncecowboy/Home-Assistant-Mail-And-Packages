@@ -32,7 +32,7 @@ jobs:
       - name: Test with tox
         run: tox
       - name: Upload coverage data
-        uses: "actions/upload-artifact@v2.2.4"
+        uses: "actions/upload-artifact@v4"
         with:
           name: coverage-data
           path: "coverage.xml"
