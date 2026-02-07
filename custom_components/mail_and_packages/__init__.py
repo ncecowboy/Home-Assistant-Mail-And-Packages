@@ -86,7 +86,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
     # Sync options with data if they differ
     if config_entry.options != config_entry.data:
-        hass.config_entries.async_update_entry(config_entry, options=config_entry.data)
+        hass.config_entries.async_update_entry(
+            config_entry, options=config_entry.data.copy()
+        )
     config = config_entry.data
 
     # Variables for data coordinator
@@ -177,9 +179,12 @@ async def async_migrate_entry(hass, config_entry):
         updated_config[CONF_AMAZON_DAYS] = DEFAULT_AMAZON_DAYS
 
         if updated_config != config_entry.data:
-            hass.config_entries.async_update_entry(config_entry, data=updated_config)
+            hass.config_entries.async_update_entry(
+                config_entry, data=updated_config, version=4
+            )
+        else:
+            hass.config_entries.async_update_entry(config_entry, version=4)
 
-        hass.config_entries.async_update_entry(config_entry, version=4)
         _LOGGER.debug("Migration to version %s complete", config_entry.version)
 
     # 2 -> 4
@@ -198,9 +203,12 @@ async def async_migrate_entry(hass, config_entry):
         updated_config[CONF_AMAZON_DAYS] = DEFAULT_AMAZON_DAYS
 
         if updated_config != config_entry.data:
-            hass.config_entries.async_update_entry(config_entry, data=updated_config)
+            hass.config_entries.async_update_entry(
+                config_entry, data=updated_config, version=4
+            )
+        else:
+            hass.config_entries.async_update_entry(config_entry, version=4)
 
-        hass.config_entries.async_update_entry(config_entry, version=4)
         _LOGGER.debug("Migration to version %s complete", config_entry.version)
 
     if version == 3:
@@ -211,9 +219,12 @@ async def async_migrate_entry(hass, config_entry):
         updated_config[CONF_AMAZON_DAYS] = DEFAULT_AMAZON_DAYS
 
         if updated_config != config_entry.data:
-            hass.config_entries.async_update_entry(config_entry, data=updated_config)
+            hass.config_entries.async_update_entry(
+                config_entry, data=updated_config, version=4
+            )
+        else:
+            hass.config_entries.async_update_entry(config_entry, version=4)
 
-        hass.config_entries.async_update_entry(config_entry, version=4)
         _LOGGER.debug("Migration to version %s complete", config_entry.version)
 
     return True
