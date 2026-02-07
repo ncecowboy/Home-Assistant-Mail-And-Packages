@@ -84,7 +84,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
     config_entry.add_update_listener(update_listener)
 
-    config_entry.options = config_entry.data
+    # Sync options with data if they differ
+    if config_entry.options != config_entry.data:
+        hass.config_entries.async_update_entry(config_entry, options=config_entry.data)
     config = config_entry.data
 
     # Variables for data coordinator
