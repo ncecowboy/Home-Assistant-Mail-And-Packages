@@ -187,7 +187,7 @@ async def async_migrate_entry(hass, config_entry):
         if updated_config != config_entry.data:
             hass.config_entries.async_update_entry(config_entry, data=updated_config)
 
-        config_entry.version = 4
+        hass.config_entries.async_update_entry(config_entry, version=4)
         _LOGGER.debug("Migration to version %s complete", config_entry.version)
 
     # 2 -> 4
@@ -208,7 +208,7 @@ async def async_migrate_entry(hass, config_entry):
         if updated_config != config_entry.data:
             hass.config_entries.async_update_entry(config_entry, data=updated_config)
 
-        config_entry.version = 4
+        hass.config_entries.async_update_entry(config_entry, version=4)
         _LOGGER.debug("Migration to version %s complete", config_entry.version)
 
     if version == 3:
@@ -221,7 +221,7 @@ async def async_migrate_entry(hass, config_entry):
         if updated_config != config_entry.data:
             hass.config_entries.async_update_entry(config_entry, data=updated_config)
 
-        config_entry.version = 4
+        hass.config_entries.async_update_entry(config_entry, version=4)
         _LOGGER.debug("Migration to version %s complete", config_entry.version)
 
     return True
