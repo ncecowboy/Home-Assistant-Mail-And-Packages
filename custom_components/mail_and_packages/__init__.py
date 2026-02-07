@@ -247,6 +247,7 @@ class MailDataUpdateCoordinator(DataUpdateCoordinator):
                 data = await self.hass.async_add_executor_job(
                     process_emails, self.hass, self.config
                 )
+            return data
         except TimeoutError as timeout_err:
             error_msg = (
                 f"Timeout fetching {self.name} data after {self.timeout} seconds"
@@ -256,4 +257,3 @@ class MailDataUpdateCoordinator(DataUpdateCoordinator):
         except Exception as error:
             _LOGGER.error("Problem updating sensors: %s", error)
             raise UpdateFailed(error) from error
-        return data
