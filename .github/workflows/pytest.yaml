@@ -12,9 +12,9 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.8"
-          - "3.9"
-          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
 
     steps:
       - uses: actions/checkout@v2
@@ -32,7 +32,7 @@ jobs:
       - name: Test with tox
         run: tox
       - name: Upload coverage data
-        uses: "actions/upload-artifact@v2.2.4"
+        uses: "actions/upload-artifact@v4"
         with:
           name: coverage-data
           path: "coverage.xml"
