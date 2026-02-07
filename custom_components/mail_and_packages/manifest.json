@@ -1,12 +1,13 @@
 {
   "domain": "mail_and_packages",
   "name": "Mail and Packages",
-  "documentation": "https://github.com/moralmunky/Home-Assistant-Mail-And-Packages",
-  "issue_tracker": "https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/issues",
+  "documentation": "https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages",
+  "issue_tracker": "https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/issues",
   "dependencies": [],
   "codeowners": [
     "@moralmunky",
-    "@firstof9"
+    "@firstof9",
+    "@ncecowboy"
   ],
   "config_flow": true,
   "requirements": [
@@ -14,5 +15,5 @@
     "python-resize-image>=1.1.19"
   ],
   "iot_class": "cloud_polling",
-  "version": "0.0.0-dev"
+  "version": "1.0.0"
 }
