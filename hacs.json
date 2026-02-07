@@ -1,6 +1,6 @@
 {
     "name": "Mail and Packages",
-    "homeassistant": "0.109.0",
+    "homeassistant": "2022.2.0",
     "zip_release": true,
     "filename": "mail_and_packages.zip"    
 }
