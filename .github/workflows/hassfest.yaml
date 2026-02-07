@@ -10,6 +10,8 @@ jobs:
   validate:
     runs-on: "ubuntu-latest"
     name: Hassfest Validation
+    permissions:
+      contents: read
     steps:
       - name: "Checkout the repository"
         uses: "actions/checkout@v4"
