@@ -9,6 +9,7 @@ from homeassistant.components.camera import Camera
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ENTITY_ID, CONF_HOST
 from homeassistant.core import ServiceCall
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     ATTR_AMAZON_IMAGE,
@@ -79,7 +80,7 @@ async def async_setup_entry(hass, config, async_add_entities):
     async_add_entities(camera)
 
 
-class MailCam(Camera):
+class MailCam(CoordinatorEntity, Camera):
     """Representation of a local file camera."""
 
     def __init__(
@@ -91,14 +92,14 @@ class MailCam(Camera):
         file_path: str,
     ) -> None:
         """Initialize Local File Camera component."""
-        super().__init__()
+        super().__init__(coordinator)
+        Camera.__init__(self)
 
         self.hass = hass
         self._name = CAMERA_DATA[name][SENSOR_NAME]
         self._type = name
         self.check_file_path_access(file_path)
         self._file_path = file_path
-        self._coordinator = coordinator
         self._host = config.data.get(CONF_HOST)
         self._unique_id = config.entry_id
         self._no_mail = (
@@ -133,20 +134,20 @@ class MailCam(Camera):
         _LOGGER.debug("Camera Update: %s", self._type)
         _LOGGER.debug("Custom No Mail: %s", self._no_mail)
 
-        if not self._coordinator.last_update_success:
+        if not self.coordinator.last_update_success:
             _LOGGER.warning("Update to update camera image. Unavailable.")
             return
 
-        if self._coordinator.data is None:
+        if self.coordinator.data is None:
             _LOGGER.warning("Unable to update camera image, no data.")
             return
 
         if self._type == "usps_camera":
             # Update camera image for USPS informed delivery images
-            image = self._coordinator.data[ATTR_IMAGE_NAME]
+            image = self.coordinator.data[ATTR_IMAGE_NAME]
 
-            if ATTR_IMAGE_PATH in self._coordinator.data.keys():
-                path = self._coordinator.data[ATTR_IMAGE_PATH]
+            if ATTR_IMAGE_PATH in self.coordinator.data.keys():
+                path = self.coordinator.data[ATTR_IMAGE_PATH]
                 file_path = f"{self.hass.config.path()}/{path}{image}"
             else:
                 if self._no_mail is None:
@@ -156,10 +157,10 @@ class MailCam(Camera):
 
         elif self._type == "amazon_camera":
             # Update camera image for Amazon deliveries
-            image = self._coordinator.data[ATTR_AMAZON_IMAGE]
+            image = self.coordinator.data[ATTR_AMAZON_IMAGE]
 
-            if ATTR_IMAGE_PATH in self._coordinator.data.keys():
-                path = f"{self._coordinator.data[ATTR_IMAGE_PATH]}amazon/"
+            if ATTR_IMAGE_PATH in self.coordinator.data.keys():
+                path = f"{self.coordinator.data[ATTR_IMAGE_PATH]}amazon/"
                 file_path = f"{self.hass.config.path()}/{path}{image}"
             else:
                 file_path = f"{os.path.dirname(__file__)}/no_deliveries.jpg"
@@ -198,18 +199,11 @@ class MailCam(Camera):
         return {"file_path": self._file_path}
 
     @property
-    def should_poll(self) -> bool:
-        """Return True if entity has to be polled for state.
-
-        False if entity pushes its state to HA.
-        """
-        return True
-
-    async def async_update(self):
-        """Update camera entity and refresh attributes."""
-        self.update_file_path()
-
-    @property
     def available(self) -> bool:
         """Return if entity is available."""
-        return self._coordinator.last_update_success
+        return self.coordinator.last_update_success
+
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self.update_file_path()
+        super()._handle_coordinator_update()

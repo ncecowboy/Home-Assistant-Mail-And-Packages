@@ -3,7 +3,6 @@ import asyncio
 import logging
 from datetime import timedelta
 
-from async_timeout import timeout
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_RESOURCES
 from homeassistant.core import HomeAssistant
@@ -242,12 +241,16 @@ class MailDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Fetch data."""
-        async with timeout(self.timeout):
-            try:
+        try:
+            async with asyncio.timeout(self.timeout):
                 data = await self.hass.async_add_executor_job(
                     process_emails, self.hass, self.config
                 )
-            except Exception as error:
-                _LOGGER.error("Problem updating sensors: %s", error)
-                raise UpdateFailed(error) from error
-            return data
+        except TimeoutError:
+            error_msg = f"Timeout fetching {self.name} data after {self.timeout} seconds"
+            _LOGGER.error(error_msg)
+            raise UpdateFailed(error_msg) from None
+        except Exception as error:
+            _LOGGER.error("Problem updating sensors: %s", error)
+            raise UpdateFailed(error) from error
+        return data
