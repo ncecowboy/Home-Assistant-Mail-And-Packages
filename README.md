@@ -157,8 +157,7 @@ Each supported shipper gets multiple sensors (where applicable):
 - `sensor.mail_image_url` - Web-accessible URL for mail images
 
 ### Amazon-Specific Sensors
-- `sensor.mail_amazon_hub` - Amazon Hub Locker packages
-- `sensor.mail_amazon_hub_code` - Pickup code for Amazon Hub (in sensor attributes)
+- `sensor.mail_amazon_hub` - Amazon Hub Locker packages with pickup code in attributes
 
 ### Aggregate Sensors
 - `sensor.mail_packages_delivered` - Total packages delivered today (all shippers)
