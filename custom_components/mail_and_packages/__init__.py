@@ -1,4 +1,5 @@
 """Mail and Packages Integration."""
+
 import asyncio
 import logging
 from datetime import timedelta
@@ -247,7 +248,9 @@ class MailDataUpdateCoordinator(DataUpdateCoordinator):
                     process_emails, self.hass, self.config
                 )
         except TimeoutError:
-            error_msg = f"Timeout fetching {self.name} data after {self.timeout} seconds"
+            error_msg = (
+                f"Timeout fetching {self.name} data after {self.timeout} seconds"
+            )
             _LOGGER.error(error_msg)
             raise UpdateFailed(error_msg) from None
         except Exception as error:
