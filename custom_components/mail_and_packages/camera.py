@@ -93,7 +93,9 @@ class MailCam(CoordinatorEntity, Camera):
         file_path: str,
     ) -> None:
         """Initialize Local File Camera component."""
-        super().__init__(coordinator)
+        # Initialize CoordinatorEntity first
+        CoordinatorEntity.__init__(self, coordinator)
+        # Initialize Camera second
         Camera.__init__(self)
 
         self.hass = hass
