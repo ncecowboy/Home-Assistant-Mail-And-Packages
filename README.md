@@ -9,7 +9,7 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/necowboy/Home-Assistant-Mail-And-Packages)
 ![Maintenance](https://img.shields.io/maintenance/yes/2026)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/ncecowboy/Home-Assistant-Mail-And-Packages)
-![GitHub commits since tagged version](https://img.shields.io/github/commits-since/ncecowboy/Home-Assistant-Mail-And-Packages/0.3.3-2/dev)
+![GitHub commits since tagged version](https://img.shields.io/github/commits-since/ncecowboy/Home-Assistant-Mail-And-Packages/1.0.0/dev)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ncecowboy/Home-Assistant-Mail-And-Packages/dev)
 ![Codecov branch](https://img.shields.io/codecov/c/github/ncecowboy/Home-Assistant-Mail-And-Packages/master)
 
