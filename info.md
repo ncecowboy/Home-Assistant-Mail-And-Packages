@@ -1,20 +1,30 @@
 {% if prerelease %}
 ### This is a pre-release version
-It may contain bugs or break functionality in addition to adding new features and fixes. Please review open issues and submit new issues to the [GitHub issue tracker](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/issues).
+It may contain bugs or break functionality in addition to adding new features and fixes. Please review open issues and submit new issues to the [GitHub issue tracker](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/issues).
 
 {% endif %}
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/moralmunky/Home-Assistant-Mail-And-Packages)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/ncecowboy/Home-Assistant-Mail-And-Packages)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
-![GitHub contributors](https://img.shields.io/github/contributors/moralmunky/Home-Assistant-Mail-And-Packages)
-![Maintenance](https://img.shields.io/maintenance/yes/2022)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/y/moralmunky/Home-Assistant-Mail-And-Packages)
-![GitHub commits since tagged version](https://img.shields.io/github/commits-since/moralmunky/Home-Assistant-Mail-And-Packages/0.3.3-2/dev)
-![GitHub last commit](https://img.shields.io/github/last-commit/moralmunky/Home-Assistant-Mail-And-Packages/dev)
+![GitHub contributors](https://img.shields.io/github/contributors/ncecowboy/Home-Assistant-Mail-And-Packages)
+![Maintenance](https://img.shields.io/maintenance/yes/2026)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/ncecowboy/Home-Assistant-Mail-And-Packages)
+![GitHub commits since tagged version](https://img.shields.io/github/commits-since/ncecowboy/Home-Assistant-Mail-And-Packages/0.3.3-2/dev)
+![GitHub last commit](https://img.shields.io/github/last-commit/ncecowboy/Home-Assistant-Mail-And-Packages/dev)
 
 ## About Mail and Packages integration
 
-The [Mail and Packages integration](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages) creates sensors for [supported shippers](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/wiki/Supported-Shipper-Requirements) to show a snapshot of mail and **packages that are scheduled to be delivered the current day**. For the packages that are scheduled for delivery the current day a count of in transit and delivered packages will be provided. It also generates the number of USPS mail pieces and provides a rotating GIF of the USPS provided images of the mail, if available, for the current day.
+The [Mail and Packages integration](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages) creates sensors for [supported shippers](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki/Supported-Shipper-Requirements) to show a snapshot of mail and **packages that are scheduled to be delivered the current day**. For the packages that are scheduled for delivery the current day a count of in transit and delivered packages will be provided. It also generates the number of USPS mail pieces and provides a rotating GIF of the USPS provided images of the mail, if available, for the current day.
+
+### Key Features
+- **📦 13 Supported Shippers** - USPS, UPS, FedEx, Amazon, DHL, Canada Post, Royal Mail, Australia Post, Hermes, Poczta Polska, InPost, DPD Poland, and GLS
+- **📸 USPS Informed Delivery Images** - Automatic download and GIF/MP4 creation from daily mail images
+- **🏪 Amazon Hub Locker Support** - Detects pickup codes and provides dedicated tracking
+- **🌍 Multi-Language Support** - Recognizes notifications in English, Italian, Polish, and German
+- **🔒 Privacy First** - All processing done locally, no external services or data sharing
+- **📊 50+ Sensors** - Comprehensive tracking of delivered, in-transit, and exception packages per shipper
+- **📷 2 Cameras** - USPS mail images and Amazon delivery photos
+- **🔔 Custom Services** - On-demand camera refresh and more
 
 ## Credits:
 
@@ -25,8 +35,8 @@ The [Mail and Packages integration](https://github.com/moralmunky/Home-Assistant
 
 ## How it works
 
-From your instance of HASS, the [Mail and Packages integration](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages) connects to the email account you supply where your shipment notifications are sent. It reviews at the subject lines of the current day's emails from the [supported shippers](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/wiki/Supported-Shipper-Requirements) and counts the subject lines that match known language from the [supported shippers](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/wiki/Supported-Shipper-Requirements) about their transit status. For USPS Informed delivery emails, it also downloads the mail images to combine them into a rotating GIF. 
-See the WIKI [information on how this works](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/wiki).
+From your instance of HASS, the [Mail and Packages integration](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages) connects to the email account you supply where your shipment notifications are sent. It reviews at the subject lines of the current day's emails from the [supported shippers](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki/Supported-Shipper-Requirements) and counts the subject lines that match known language from the [supported shippers](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki/Supported-Shipper-Requirements) about their transit status. For USPS Informed delivery emails, it also downloads the mail images to combine them into a rotating GIF. 
+See the WIKI [information on how this works](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki).
 
 _**The email can not be deleted until the next day**_. You can have your email filtered into a folder and have the integration watch that folder.
 
@@ -42,16 +52,18 @@ Please note that files stored in the `www` Home Assistant folder are [publicly a
 * `sensor.mail_image_system_path`
 * `sensor.mail_image_url` - Requires that either `External_URL` or `Internal_URL` is defined in the general configuration options in Home Assistant.
 
-## Support
-[Configuration](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/wiki/Configuration-and-Email-Settings)
+## Support & Documentation
 
-[Troubleshooting](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/wiki/Troubleshooting)
+### Setup & Configuration
+- [Configuration and Email Settings](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki/Configuration-and-Email-Settings)
+- [Supported Shipper Requirements](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki/Supported-Shipper-Requirements)
+- [Troubleshooting](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki/Troubleshooting)
 
-[Supported Shipper Requirements](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/wiki/Supported-Shipper-Requirements)
+### Templates & Examples
+- [USPS Informed Delivery Image](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki/USPS-Informed-Delivery-Image)
+- [Text Summary](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki/Mail-Summary-Message)
+- [Notifications](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/wiki/Notifications)
 
-## Template and Examples
-[USPS Informed Delivery Image](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/wiki/Troubleshooting)
-
-[Text Summary](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/wiki/Troubleshooting)
-
-[Notificaions](https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/wiki/Troubleshooting)
+### Issues & Feature Requests
+- [GitHub Issues](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/issues)
+- [GitHub Discussions](https://github.com/ncecowboy/Home-Assistant-Mail-And-Packages/discussions)
