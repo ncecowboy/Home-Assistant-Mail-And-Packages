@@ -1,4 +1,5 @@
 """Constants for Mail and Packages."""
+
 from __future__ import annotations
 
 from typing import Final
@@ -57,7 +58,7 @@ DEFAULT_PORT = "993"
 DEFAULT_FOLDER = '"INBOX"'
 DEFAULT_PATH = "custom_components/mail_and_packages/images/"
 DEFAULT_IMAGE_SECURITY = True
-DEFAULT_IMAP_TIMEOUT = 30
+DEFAULT_IMAP_TIMEOUT = 60
 DEFAULT_GIF_DURATION = 5
 DEFAULT_SCAN_INTERVAL = 5
 DEFAULT_GIF_FILE_NAME = "mail_today.gif"

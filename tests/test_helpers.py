@@ -1,4 +1,5 @@
 """Tests for helpers module."""
+
 import datetime
 import errno
 from datetime import date, timezone
@@ -111,7 +112,7 @@ async def test_process_emails(
     state = hass.states.get(MAIL_IMAGE_URL_ENTITY)
     assert state.state == "http://127.0.0.1:8123/local/mail_and_packages/testfile.gif"
     result = process_emails(hass, config)
-    assert isinstance(result["mail_updated"],datetime.datetime)
+    assert isinstance(result["mail_updated"], datetime.datetime)
     assert result["zpackages_delivered"] == 0
     assert result["zpackages_transit"] == 0
     assert result["amazon_delivered"] == 0
@@ -158,7 +159,7 @@ async def test_process_emails_external(
         == "http://really.fake.host.net:8123/local/mail_and_packages/testfile.gif"
     )
     result = process_emails(hass, config)
-    assert isinstance(result["mail_updated"],datetime.datetime)
+    assert isinstance(result["mail_updated"], datetime.datetime)
     assert result["zpackages_delivered"] == 0
     assert result["zpackages_transit"] == 0
     assert result["amazon_delivered"] == 0
@@ -887,12 +888,12 @@ async def test_generate_mp4(
 async def test_connection_error(caplog):
     result = login("localhost", 993, "fakeuser", "suchfakemuchpassword")
     assert not result
-    assert "Network error while connecting to server:" in caplog.text
+    assert "Network error while connecting to server localhost:" in caplog.text
 
 
 async def test_login_error(mock_imap_login_error, caplog):
     login("localhost", 993, "fakeuser", "suchfakemuchpassword")
-    assert "Error logging into IMAP Server:" in caplog.text
+    assert "Error logging into IMAP Server localhost:" in caplog.text
 
 
 async def test_selectfolder_list_error(mock_imap_list_error, caplog):
@@ -930,7 +931,7 @@ async def test_process_emails_random_image(hass, mock_imap_login_error, caplog):
 
     config = entry.data
     process_emails(hass, config)
-    assert "Error logging into IMAP Server:" in caplog.text
+    assert "Error logging into IMAP Server imap.test.email:" in caplog.text
 
 
 async def test_usps_exception(hass, mock_imap_usps_exception):

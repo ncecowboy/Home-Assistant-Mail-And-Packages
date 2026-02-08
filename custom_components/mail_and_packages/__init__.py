@@ -247,18 +247,23 @@ class MailDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Fetch data."""
+        _LOGGER.debug(
+            "Starting email fetch for %s (timeout: %ss)", self.name, self.timeout
+        )
         try:
             async with asyncio.timeout(self.timeout):
                 data = await self.hass.async_add_executor_job(
                     process_emails, self.hass, self.config
                 )
+            _LOGGER.debug("Email fetch completed successfully for %s", self.name)
             return data
         except TimeoutError as timeout_err:
             error_msg = (
-                f"Timeout fetching {self.name} data after {self.timeout} seconds"
+                f"Timeout fetching {self.name} data after {self.timeout} seconds. "
+                f"Consider increasing the IMAP timeout in the integration settings."
             )
             _LOGGER.error(error_msg)
             raise UpdateFailed(error_msg) from timeout_err
         except Exception as error:
-            _LOGGER.error("Problem updating sensors: %s", error)
+            _LOGGER.error("Problem updating sensors for %s: %s", self.name, error)
             raise UpdateFailed(error) from error
