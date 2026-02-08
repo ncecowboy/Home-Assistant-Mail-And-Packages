@@ -108,6 +108,8 @@ class MailCam(CoordinatorEntity, Camera):
             if not config.data.get(CONF_CUSTOM_IMG)
             else config.data.get(CONF_CUSTOM_IMG_FILE)
         )
+        # Initialize access_tokens for Home Assistant camera token management
+        self.access_tokens = []
 
     async def async_camera_image(
         self, width: int | None = None, height: int | None = None
