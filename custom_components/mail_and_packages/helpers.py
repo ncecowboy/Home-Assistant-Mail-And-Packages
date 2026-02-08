@@ -27,6 +27,7 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.util import dt as dt_util
 from PIL import Image
 from resizeimage import resizeimage
 
@@ -502,11 +503,11 @@ def get_formatted_date() -> str:
 def update_time() -> Any:
     """Get update time.
 
-    Returns current timestamp as string
+    Returns current timestamp in local timezone
     """
     # updated = datetime.datetime.now().strftime("%b-%d-%Y %I:%M %p")
     # updated = datetime.datetime.now(timezone.utc).isoformat(timespec="minutes")
-    updated = datetime.datetime.now(timezone.utc)
+    updated = dt_util.now()
 
     return updated
 
