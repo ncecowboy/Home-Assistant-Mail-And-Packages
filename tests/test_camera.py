@@ -268,3 +268,36 @@ async def test_access_tokens_initialization(
             assert hasattr(camera, "access_tokens")
             assert isinstance(camera.access_tokens, list)
             assert camera.access_tokens == []
+
+
+async def test_webrtc_provider_initialization(
+    hass,
+    mock_imap_no_email,
+    mock_osremove,
+    mock_osmakedir,
+    mock_listdir,
+    mock_update_time,
+    mock_copy_overlays,
+    mock_hash_file,
+    mock_getctime_today,
+    mock_update,
+):
+    """Test that _webrtc_provider attribute is properly initialized."""
+    with patch("os.path.isfile", return_value=True), patch(
+        "os.access", return_value=True
+    ):
+        entry = MockConfigEntry(
+            domain=DOMAIN,
+            title="imap.test.email",
+            data=FAKE_CONFIG_DATA,
+        )
+
+        entry.add_to_hass(hass)
+        assert await hass.config_entries.async_setup(entry.entry_id)
+        await hass.async_block_till_done()
+
+        cameras = hass.data[DOMAIN][entry.entry_id][CAMERA]
+        # Verify that _webrtc_provider attribute exists and is None
+        for camera in cameras:
+            assert hasattr(camera, "_webrtc_provider")
+            assert camera._webrtc_provider is None

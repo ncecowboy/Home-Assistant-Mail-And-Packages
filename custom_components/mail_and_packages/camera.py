@@ -110,6 +110,8 @@ class MailCam(CoordinatorEntity, Camera):
         )
         # Initialize access_tokens for Home Assistant camera token management
         self.access_tokens = []
+        # Initialize _webrtc_provider for Home Assistant camera component
+        self._webrtc_provider = None
 
     async def async_camera_image(
         self, width: int | None = None, height: int | None = None
