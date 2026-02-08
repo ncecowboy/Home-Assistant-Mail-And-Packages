@@ -1,5 +1,6 @@
 """Tests for camera component."""
 import logging
+from collections import deque
 from unittest.mock import mock_open, patch
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -236,7 +237,7 @@ async def test_async_on_demand_update(
         assert image is None
 
 
-async def test_access_tokens_initialization(
+async def test_camera_base_initialization(
     hass,
     mock_imap_no_email,
     mock_osremove,
@@ -248,7 +249,7 @@ async def test_access_tokens_initialization(
     mock_getctime_today,
     mock_update,
 ):
-    """Test that access_tokens attribute is properly initialized."""
+    """Test that Camera base class attributes are properly initialized."""
     with patch("os.path.isfile", return_value=True), patch(
         "os.access", return_value=True
     ):
@@ -263,8 +264,19 @@ async def test_access_tokens_initialization(
         await hass.async_block_till_done()
 
         cameras = hass.data[DOMAIN][entry.entry_id][CAMERA]
-        # Verify that access_tokens attribute exists and is a list
+        # Verify that Camera base class attributes are properly initialized
         for camera in cameras:
+            # Check _webrtc_provider
+            assert hasattr(camera, "_webrtc_provider")
+            assert camera._webrtc_provider is None
+
+            # Check access_tokens (should be a deque with maxlen=2)
             assert hasattr(camera, "access_tokens")
-            assert isinstance(camera.access_tokens, list)
-            assert camera.access_tokens == []
+            assert isinstance(camera.access_tokens, deque)
+            # maxlen=2 is the default set by Camera base class in HA
+            assert camera.access_tokens.maxlen == 2
+
+            # Check other Camera base attributes
+            assert hasattr(camera, "stream")
+            assert hasattr(camera, "content_type")
+            assert hasattr(camera, "_cache")

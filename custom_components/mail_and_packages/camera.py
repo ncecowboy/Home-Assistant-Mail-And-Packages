@@ -93,7 +93,11 @@ class MailCam(CoordinatorEntity, Camera):
         file_path: str,
     ) -> None:
         """Initialize Local File Camera component."""
-        # Use super() for proper multiple inheritance
+        # Explicitly initialize both parent classes for proper multiple inheritance.
+        # Camera.__init__ takes no args, CoordinatorEntity.__init__ takes coordinator.
+        # Since they have incompatible signatures, we must call each explicitly
+        # rather than relying on super() to chain through the MRO.
+        Camera.__init__(self)
         super().__init__(coordinator)
 
         self.hass = hass
@@ -108,8 +112,6 @@ class MailCam(CoordinatorEntity, Camera):
             if not config.data.get(CONF_CUSTOM_IMG)
             else config.data.get(CONF_CUSTOM_IMG_FILE)
         )
-        # Initialize access_tokens for Home Assistant camera token management
-        self.access_tokens = []
 
     async def async_camera_image(
         self, width: int | None = None, height: int | None = None
