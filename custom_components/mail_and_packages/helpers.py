@@ -445,6 +445,12 @@ def login(
         _LOGGER.debug("IMAP login successful for %s", host)
     except Exception as err:
         _LOGGER.error("Error logging into IMAP Server %s: %s", host, str(err))
+        # Best-effort cleanup of the already-established IMAP connection
+        try:
+            account.logout()
+        except Exception:  # noqa: BLE001
+            # Ignore errors during logout to preserve original exception context
+            pass
         return False
 
     return account
