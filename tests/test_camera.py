@@ -269,12 +269,13 @@ async def test_camera_base_initialization(
             # Check _webrtc_provider
             assert hasattr(camera, "_webrtc_provider")
             assert camera._webrtc_provider is None
-            
+
             # Check access_tokens (should be a deque with maxlen=2)
             assert hasattr(camera, "access_tokens")
             assert isinstance(camera.access_tokens, deque)
+            # maxlen=2 is the default set by Camera base class in HA
             assert camera.access_tokens.maxlen == 2
-            
+
             # Check other Camera base attributes
             assert hasattr(camera, "stream")
             assert hasattr(camera, "content_type")

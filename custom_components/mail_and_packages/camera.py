@@ -94,7 +94,7 @@ class MailCam(CoordinatorEntity, Camera):
     ) -> None:
         """Initialize Local File Camera component."""
         # Initialize both parent classes for proper multiple inheritance
-        # Call Camera.__init__ first so coordinator can override defaults if needed
+        # Call Camera.__init__ first to ensure all Camera attributes are initialized
         Camera.__init__(self)
         super().__init__(coordinator)
 
