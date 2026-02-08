@@ -1,5 +1,6 @@
 """Tests for camera component."""
 import logging
+from collections import deque
 from unittest.mock import mock_open, patch
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -271,7 +272,6 @@ async def test_camera_base_initialization(
             
             # Check access_tokens (should be a deque with maxlen=2)
             assert hasattr(camera, "access_tokens")
-            from collections import deque
             assert isinstance(camera.access_tokens, deque)
             assert camera.access_tokens.maxlen == 2
             
