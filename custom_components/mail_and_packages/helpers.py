@@ -160,35 +160,44 @@ def process_emails(hass: HomeAssistant, config: ConfigEntry) -> dict:
     if not account:
         return data
 
-    if not selectfolder(account, folder):
-        # Bail out on error
-        return data
+    try:
+        if not selectfolder(account, folder):
+            # Bail out on error
+            return data
 
-    # Create image file name dict container
-    _image = {}
+        # Create image file name dict container
+        _image = {}
 
-    # USPS Mail Image name
-    image_name = image_file_name(hass, config)
-    _LOGGER.debug("Image name: %s", image_name)
-    _image[ATTR_IMAGE_NAME] = image_name
+        # USPS Mail Image name
+        image_name = image_file_name(hass, config)
+        _LOGGER.debug("Image name: %s", image_name)
+        _image[ATTR_IMAGE_NAME] = image_name
 
-    # Amazon delivery image name
-    image_name = image_file_name(hass, config, True)
-    _LOGGER.debug("Amazon Image Name: %s", image_name)
-    _image[ATTR_AMAZON_IMAGE] = image_name
+        # Amazon delivery image name
+        image_name = image_file_name(hass, config, True)
+        _LOGGER.debug("Amazon Image Name: %s", image_name)
+        _image[ATTR_AMAZON_IMAGE] = image_name
 
-    image_path = config.get(CONF_PATH)
-    _LOGGER.debug("Image path: %s", image_path)
-    _image[ATTR_IMAGE_PATH] = image_path
-    data.update(_image)
+        image_path = config.get(CONF_PATH)
+        _LOGGER.debug("Image path: %s", image_path)
+        _image[ATTR_IMAGE_PATH] = image_path
+        data.update(_image)
 
-    # Only update sensors we're intrested in
-    for sensor in resources:
-        fetch(hass, config, account, data, sensor)
+        # Only update sensors we're intrested in
+        for sensor in resources:
+            fetch(hass, config, account, data, sensor)
 
-    # Copy image file to www directory if enabled
-    if config.get(CONF_ALLOW_EXTERNAL):
-        copy_images(hass, config)
+        # Copy image file to www directory if enabled
+        if config.get(CONF_ALLOW_EXTERNAL):
+            copy_images(hass, config)
+
+    finally:
+        # Always close the IMAP connection to prevent connection buildup
+        try:
+            account.logout()
+            _LOGGER.debug("IMAP connection closed successfully for %s", host)
+        except Exception as err:
+            _LOGGER.warning("Error closing IMAP connection for %s: %s", host, err)
 
     return data
 
@@ -419,19 +428,23 @@ def login(
 
     Returns account object
     """
+    _LOGGER.debug("Attempting IMAP connection to %s:%s", host, port)
+    
     # Catch invalid mail server / host names
     try:
         account = imaplib.IMAP4_SSL(host, port)
+        _LOGGER.debug("IMAP SSL connection established to %s", host)
 
     except Exception as err:
-        _LOGGER.error("Network error while connecting to server: %s", str(err))
+        _LOGGER.error("Network error while connecting to server %s: %s", host, str(err))
         return False
 
     # If login fails give error message
     try:
         account.login(user, pwd)
+        _LOGGER.debug("IMAP login successful for %s", host)
     except Exception as err:
-        _LOGGER.error("Error logging into IMAP Server: %s", str(err))
+        _LOGGER.error("Error logging into IMAP Server %s: %s", host, str(err))
         return False
 
     return account
