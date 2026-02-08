@@ -187,7 +187,7 @@ def process_emails(hass: HomeAssistant, config: ConfigEntry) -> dict:
         for sensor in resources:
             fetch(hass, config, account, data, sensor)
 
-        # Note: CONF_ALLOW_EXTERNAL is deprecated as images are now stored 
+        # Note: CONF_ALLOW_EXTERNAL is deprecated as images are now stored
         # directly in www/mail_and_packages/ which is accessible via /local/
 
     finally:
