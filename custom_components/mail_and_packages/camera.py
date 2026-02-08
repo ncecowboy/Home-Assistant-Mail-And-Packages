@@ -93,8 +93,9 @@ class MailCam(CoordinatorEntity, Camera):
         file_path: str,
     ) -> None:
         """Initialize Local File Camera component."""
-        # Use super() for proper multiple inheritance
+        # Initialize both parent classes for proper multiple inheritance
         super().__init__(coordinator)
+        Camera.__init__(self)
 
         self.hass = hass
         self._name = CAMERA_DATA[name][SENSOR_NAME]
@@ -108,10 +109,6 @@ class MailCam(CoordinatorEntity, Camera):
             if not config.data.get(CONF_CUSTOM_IMG)
             else config.data.get(CONF_CUSTOM_IMG_FILE)
         )
-        # Initialize access_tokens for Home Assistant camera token management
-        self.access_tokens = []
-        # Initialize _webrtc_provider for Home Assistant camera component
-        self._webrtc_provider = None
 
     async def async_camera_image(
         self, width: int | None = None, height: int | None = None
