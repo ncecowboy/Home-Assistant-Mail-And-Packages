@@ -183,7 +183,7 @@ def process_emails(hass: HomeAssistant, config: ConfigEntry) -> dict:
         _image[ATTR_IMAGE_PATH] = image_path
         data.update(_image)
 
-        # Only update sensors we're intrested in
+        # Only update sensors we're interested in
         for sensor in resources:
             fetch(hass, config, account, data, sensor)
 
