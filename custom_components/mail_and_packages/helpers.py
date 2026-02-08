@@ -429,7 +429,7 @@ def login(
     Returns account object
     """
     _LOGGER.debug("Attempting IMAP connection to %s:%s", host, port)
-    
+
     # Catch invalid mail server / host names
     try:
         account = imaplib.IMAP4_SSL(host, port)
@@ -567,7 +567,7 @@ def email_search(
 
     _LOGGER.debug("DEBUG email_search value: %s", value)
 
-    (check, new_value) = value
+    check, new_value = value
     if new_value[0] is None:
         _LOGGER.warning("DEBUG email_search value was invalid: None")
         value = (check, [b""])
@@ -608,7 +608,7 @@ def get_mails(
     _LOGGER.debug("Attempting to find Informed Delivery mail")
     _LOGGER.debug("Informed delivery search date: %s", get_formatted_date())
 
-    (server_response, data) = email_search(
+    server_response, data = email_search(
         account,
         SENSOR_DATA[ATTR_USPS_MAIL][ATTR_EMAIL],
         get_formatted_date(),
@@ -879,7 +879,7 @@ def get_count(
             subject,
         )
 
-        (server_response, data) = email_search(
+        server_response, data = email_search(
             account, SENSOR_DATA[sensor_type][ATTR_EMAIL], today, subject
         )
         if server_response == "OK" and data[0] is not None:
@@ -1033,9 +1033,7 @@ def amazon_search(
             email_address = AMAZON_EMAIL + domain
             _LOGGER.debug("Amazon email search address: %s", str(email_address))
 
-            (server_response, data) = email_search(
-                account, email_address, today, subject
-            )
+            server_response, data = email_search(account, email_address, today, subject)
 
             if server_response == "OK" and data[0] is not None:
                 count += len(data[0].split())
@@ -1136,7 +1134,7 @@ def amazon_hub(account: Type[imaplib.IMAP4_SSL], fwds: Optional[str] = None) -> 
     _LOGGER.debug("[Hub] Amazon email list: %s", str(email_addresses))
 
     for address in email_addresses:
-        (server_response, sdata) = email_search(
+        server_response, sdata = email_search(
             account, address, today, subject=AMAZON_HUB_SUBJECT
         )
 
@@ -1217,7 +1215,7 @@ def amazon_exception(
             email_address.append(f"{AMAZON_EMAIL}{domain}")
             _LOGGER.debug("Amazon email search address: %s", str(email_address))
 
-        (server_response, sdata) = email_search(
+        server_response, sdata = email_search(
             account, email_address, tfmt, AMAZON_EXCEPTION_SUBJECT
         )
 
@@ -1269,7 +1267,7 @@ def get_items(
                 email_address.append(f"{address}@{domain}")
             _LOGGER.debug("Amazon email search address: %s", str(email_address))
 
-        (server_response, sdata) = email_search(account, email_address, tfmt)
+        server_response, sdata = email_search(account, email_address, tfmt)
 
         if server_response == "OK":
             mail_ids = sdata[0]

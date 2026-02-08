@@ -1,4 +1,5 @@
 """Tests for helpers module."""
+
 import datetime
 import errno
 from datetime import date, timezone
@@ -111,7 +112,7 @@ async def test_process_emails(
     state = hass.states.get(MAIL_IMAGE_URL_ENTITY)
     assert state.state == "http://127.0.0.1:8123/local/mail_and_packages/testfile.gif"
     result = process_emails(hass, config)
-    assert isinstance(result["mail_updated"],datetime.datetime)
+    assert isinstance(result["mail_updated"], datetime.datetime)
     assert result["zpackages_delivered"] == 0
     assert result["zpackages_transit"] == 0
     assert result["amazon_delivered"] == 0
@@ -158,7 +159,7 @@ async def test_process_emails_external(
         == "http://really.fake.host.net:8123/local/mail_and_packages/testfile.gif"
     )
     result = process_emails(hass, config)
-    assert isinstance(result["mail_updated"],datetime.datetime)
+    assert isinstance(result["mail_updated"], datetime.datetime)
     assert result["zpackages_delivered"] == 0
     assert result["zpackages_transit"] == 0
     assert result["amazon_delivered"] == 0

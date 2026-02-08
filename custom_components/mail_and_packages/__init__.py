@@ -247,7 +247,9 @@ class MailDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Fetch data."""
-        _LOGGER.debug("Starting email fetch for %s (timeout: %ss)", self.name, self.timeout)
+        _LOGGER.debug(
+            "Starting email fetch for %s (timeout: %ss)", self.name, self.timeout
+        )
         try:
             async with asyncio.timeout(self.timeout):
                 data = await self.hass.async_add_executor_job(
