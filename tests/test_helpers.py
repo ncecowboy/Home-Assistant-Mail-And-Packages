@@ -106,7 +106,7 @@ async def test_process_emails(
     state = hass.states.get(MAIL_IMAGE_SYSTEM_PATH)
     assert state is not None
     assert (
-        "/testing_config/custom_components/mail_and_packages/images/testfile.gif"
+        "/testing_config/www/mail_and_packages/testfile.gif"
         in state.state
     )
     state = hass.states.get(MAIL_IMAGE_URL_ENTITY)
@@ -150,7 +150,7 @@ async def test_process_emails_external(
     state = hass.states.get(MAIL_IMAGE_SYSTEM_PATH)
     assert state is not None
     assert (
-        "/testing_config/custom_components/mail_and_packages/images/testfile.gif"
+        "/testing_config/www/mail_and_packages/testfile.gif"
         in state.state
     )
     state = hass.states.get(MAIL_IMAGE_URL_ENTITY)
@@ -167,15 +167,9 @@ async def test_process_emails_external(
     assert result["amazon_packages"] == 0
     assert result["amazon_order"] == []
     assert result["amazon_hub_code"] == []
-    assert (
-        "custom_components/mail_and_packages/images/" in mock_copytree.call_args.args[0]
-    )
-    assert "www/mail_and_packages" in mock_copytree.call_args.args[1]
-    assert mock_copytree.call_args.kwargs == {"dirs_exist_ok": True}
-    assert (
-        "www/mail_and_packages/amazon/anotherfakefile.mp4"
-        in mock_osremove.call_args.args[0]
-    )
+    # With new default path (www/mail_and_packages/), source and dest are same
+    # so copytree should not be called
+    assert mock_copytree.call_count == 0
 
 
 async def test_process_emails_external_error(
