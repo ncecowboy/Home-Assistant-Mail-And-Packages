@@ -134,8 +134,8 @@ def default_image_path(
 
     Returns the default path based on logic (placeholder for future code)
     """
-    # Return the default
-    return "custom_components/mail_and_packages/images/"
+    # Return the default - www directory is accessible via /local/ URL
+    return "www/mail_and_packages/"
 
 
 def process_emails(hass: HomeAssistant, config: ConfigEntry) -> dict:
@@ -187,9 +187,8 @@ def process_emails(hass: HomeAssistant, config: ConfigEntry) -> dict:
         for sensor in resources:
             fetch(hass, config, account, data, sensor)
 
-        # Copy image file to www directory if enabled
-        if config.get(CONF_ALLOW_EXTERNAL):
-            copy_images(hass, config)
+        # Note: CONF_ALLOW_EXTERNAL is deprecated as images are now stored 
+        # directly in www/mail_and_packages/ which is accessible via /local/
 
     finally:
         # Always close the IMAP connection to prevent connection buildup
