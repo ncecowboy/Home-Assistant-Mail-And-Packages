@@ -73,6 +73,7 @@ from .const import (
     CONF_GENERATE_MP4,
     CONF_PATH,
     DEFAULT_AMAZON_DAYS,
+    DEFAULT_PATH,
     OVERLAY,
     SENSOR_DATA,
     SENSOR_TYPES,
@@ -135,7 +136,7 @@ def default_image_path(
     Returns the default path based on logic (placeholder for future code)
     """
     # Return the default - www directory is accessible via /local/ URL
-    return "www/mail_and_packages/"
+    return DEFAULT_PATH
 
 
 def process_emails(hass: HomeAssistant, config: ConfigEntry) -> dict:
@@ -187,8 +188,11 @@ def process_emails(hass: HomeAssistant, config: ConfigEntry) -> dict:
         for sensor in resources:
             fetch(hass, config, account, data, sensor)
 
-        # Note: CONF_ALLOW_EXTERNAL is deprecated as images are now stored
-        # directly in www/mail_and_packages/ which is accessible via /local/
+        # Copy image file to www directory if enabled
+        # Note: With the new default path (www/mail_and_packages/), this is
+        # typically a no-op, but maintained for backward compatibility
+        if config.get(CONF_ALLOW_EXTERNAL):
+            copy_images(hass, config)
 
     finally:
         # Always close the IMAP connection to prevent connection buildup
@@ -202,15 +206,27 @@ def process_emails(hass: HomeAssistant, config: ConfigEntry) -> dict:
 
 
 def copy_images(hass: HomeAssistant, config: ConfigEntry) -> None:
-    """Copy images to www directory if enabled."""
-    paths = []
+    """Copy images to www directory if enabled.
+    
+    Note: This function is now deprecated as images are stored directly
+    in www/mail_and_packages/. It's kept for backward compatibility with
+    configurations that have allow_external enabled.
+    """
     src = f"{hass.config.path()}/{config.get(CONF_PATH)}"
     dst = f"{hass.config.path()}/www/mail_and_packages/"
-
+    
+    # If source and destination are the same, no copy needed
+    if os.path.normpath(src) == os.path.normpath(dst):
+        _LOGGER.debug(
+            "Source and destination paths are identical (%s), skipping copy", src
+        )
+        return
+    
+    paths = []
     # Setup paths list
     paths.append(dst)
     paths.append(dst + "amazon/")
-
+    
     # Clean up the destination directory
     for path in paths:
         # Path check
@@ -222,7 +238,7 @@ def copy_images(hass: HomeAssistant, config: ConfigEntry) -> None:
                 _LOGGER.error("Problem creating: %s, error returned: %s", path, err)
                 return
         cleanup_images(path)
-
+    
     try:
         copytree(src, dst, dirs_exist_ok=True)
     except Exception as err:
