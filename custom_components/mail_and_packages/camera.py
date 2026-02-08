@@ -93,8 +93,10 @@ class MailCam(CoordinatorEntity, Camera):
         file_path: str,
     ) -> None:
         """Initialize Local File Camera component."""
-        # Initialize both parent classes for proper multiple inheritance
-        # Call Camera.__init__ first to ensure all Camera attributes are initialized
+        # Explicitly initialize both parent classes for proper multiple inheritance.
+        # Camera.__init__ takes no args, CoordinatorEntity.__init__ takes coordinator.
+        # Since they have incompatible signatures, we must call each explicitly
+        # rather than relying on super() to chain through the MRO.
         Camera.__init__(self)
         super().__init__(coordinator)
 
