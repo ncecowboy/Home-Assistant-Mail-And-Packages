@@ -728,10 +728,13 @@ def get_mails(
             try:
                 _LOGGER.debug("Generating animated GIF")
                 # Use ImageIO to create mail images
+                # fps parameter is used instead of duration for better compatibility
+                # fps = 1/duration_in_seconds, so fps = 1/gif_duration
                 io.mimwrite(
                     os.path.join(image_output_path, image_name),
                     all_images,
-                    duration=gif_duration,
+                    fps=1.0 / gif_duration,
+                    loop=0,
                 )
                 _LOGGER.info("Mail image generated.")
             except Exception as err:
