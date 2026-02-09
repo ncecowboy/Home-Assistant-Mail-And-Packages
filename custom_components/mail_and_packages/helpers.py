@@ -731,6 +731,13 @@ def get_mails(
                 # gif_duration is in seconds (e.g., 5 seconds per frame)
                 # fps = 1/duration_in_seconds, so for gif_duration=5: fps=0.2
                 # This results in 5000ms per frame (5 seconds * 1000)
+                # Validate gif_duration to prevent division by zero
+                if gif_duration <= 0:
+                    _LOGGER.warning(
+                        "Invalid gif_duration value (%s), using default of 5 seconds",
+                        gif_duration,
+                    )
+                    gif_duration = 5
                 io.mimwrite(
                     os.path.join(image_output_path, image_name),
                     all_images,
@@ -770,7 +777,7 @@ def _generate_mp4(path: str, image_file: str) -> None:
 
     use a subprocess so we don't lock up the thread
     command: ffmpeg -f gif -i infile.gif outfile.mp4
-    
+
     Note: MP4 format does not support native looping like GIF. The video player
     (e.g., Home Assistant media player) is responsible for loop behavior.
     The frame timing from the GIF is preserved in the MP4 conversion.
