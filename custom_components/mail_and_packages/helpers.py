@@ -768,7 +768,11 @@ def _generate_mp4(path: str, image_file: str) -> None:
     """Generate mp4 from gif.
 
     use a subprocess so we don't lock up the thread
-    comamnd: ffmpeg -f gif -i infile.gif outfile.mp4
+    command: ffmpeg -f gif -i infile.gif outfile.mp4
+    
+    Note: MP4 format does not support native looping like GIF. The video player
+    (e.g., Home Assistant media player) is responsible for loop behavior.
+    The frame timing from the GIF is preserved in the MP4 conversion.
     """
     gif_image = os.path.join(path, image_file)
     mp4_file = os.path.join(path, image_file.replace(".gif", ".mp4"))
