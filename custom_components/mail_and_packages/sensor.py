@@ -13,6 +13,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_RESOURCES
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import dt as dt_util
 
 from .const import (
     AMAZON_EXCEPTION_ORDER,
@@ -96,7 +97,7 @@ class PackagesSensor(CoordinatorEntity, SensorEntity):
         if self.type in self.coordinator.data.keys():
             value = self.coordinator.data[self.type]
             if self.type == "mail_updated":
-                value = datetime.datetime.now(timezone.utc)
+                value = dt_util.now()
         else:
             value = None
         return value
