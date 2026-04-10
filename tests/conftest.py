@@ -796,7 +796,7 @@ _real_listdir = _real_os.listdir
 try:
     import custom_components as _cc
 
-    _CC_PATH = _cc.__path__[0]
+    _CC_PATH = _cc.__path__[0] if _cc.__path__ else None
 except ImportError:
     _CC_PATH = None
 

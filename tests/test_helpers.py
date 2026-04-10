@@ -771,13 +771,14 @@ async def test_amazon_shipped_order_it(hass, mock_imap_amazon_shipped_it):
 async def test_amazon_shipped_order_it_count(hass, mock_imap_amazon_shipped_it):
     import locale
 
+    original_locale = locale.getlocale(locale.LC_TIME)
     try:
         locale.setlocale(locale.LC_TIME, "it_IT.UTF-8")
         expected = 1
     except locale.Error:
         expected = 0
     finally:
-        locale.setlocale(locale.LC_TIME, "")
+        locale.setlocale(locale.LC_TIME, original_locale[0] or "")
 
     with patch("datetime.date") as mock_date:
         mock_date.today.return_value = date(2021, 12, 1)
