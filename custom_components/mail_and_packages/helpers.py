@@ -1234,7 +1234,7 @@ def amazon_exception(
     tfmt = get_formatted_date()
     count = 0
     info = {}
-    domains = AMAZON_DOMAINS
+    domains = list(AMAZON_DOMAINS)
     if isinstance(fwds, list):
         for fwd in fwds:
             if fwd and fwd != '""' and fwd not in domains:

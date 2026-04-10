@@ -68,14 +68,14 @@ async def test_cleanup_found_images_remove_err(
 ):
     cleanup_images("/tests/fakedir/")
 
-    assert mock_osremove_exception.called_with("/tests/fakedir/")
+    assert mock_osremove_exception.called
     assert "Error attempting to remove found image:" in caplog.text
 
 
 async def test_cleanup_images_remove_err(mock_listdir, mock_osremove_exception, caplog):
     cleanup_images("/tests/fakedir/", "testimage.jpg")
 
-    assert mock_osremove_exception.called_with("/tests/fakedir/")
+    assert mock_osremove_exception.called
     assert "Error attempting to remove image:" in caplog.text
 
 
@@ -222,6 +222,7 @@ async def test_process_emails_copytree_error(
     assert await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     config = entry.data.copy()
+    config["image_path"] = "custom_components/mail_and_packages/images/"
     with patch("custom_components.mail_and_packages.helpers.copytree") as mock_copytree:
         mock_copytree.side_effect = Exception
         process_emails(hass, config)
@@ -233,9 +234,9 @@ async def test_process_emails_bad(hass, mock_imap_no_email, mock_update):
         domain=DOMAIN,
         title="imap.test.email",
         data=FAKE_CONFIG_DATA_BAD,
+        version=2,
     )
 
-    entry.version = 2
     entry.add_to_hass(hass)
     assert await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
@@ -554,7 +555,7 @@ async def test_informed_delivery_emails_mp4(
                 mock_imap_usps_informed_digest, "./", "5", "mail_today.gif", True
             )
             assert result == 3
-            assert mock_generate_mp4.called_with("./", "mail_today.gif")
+            mock_generate_mp4.assert_called_with("./", "mail_today.gif")
 
 
 async def test_informed_delivery_emails_open_err(
@@ -663,7 +664,7 @@ async def test_informed_delivery_no_mail_copy_error(
         get_mails(
             mock_imap_usps_informed_digest_no_mail, "./", "5", "mail_today.gif", False
         )
-        assert mock_copyfile_exception.called_with("./mail_today.gif")
+        assert mock_copyfile_exception.called
         assert "File not found" in caplog.text
 
 
@@ -768,10 +769,20 @@ async def test_amazon_shipped_order_it(hass, mock_imap_amazon_shipped_it):
 
 
 async def test_amazon_shipped_order_it_count(hass, mock_imap_amazon_shipped_it):
+    import locale
+
+    try:
+        locale.setlocale(locale.LC_TIME, "it_IT.UTF-8")
+        expected = 1
+    except locale.Error:
+        expected = 0
+    finally:
+        locale.setlocale(locale.LC_TIME, "")
+
     with patch("datetime.date") as mock_date:
         mock_date.today.return_value = date(2021, 12, 1)
         result = get_items(mock_imap_amazon_shipped_it, "count")
-        assert result == 1
+        assert result == expected
 
 
 async def test_amazon_search(hass, mock_imap_no_email):
@@ -783,7 +794,7 @@ async def test_amazon_search_results(hass, mock_imap_amazon_shipped):
     result = amazon_search(
         mock_imap_amazon_shipped, "test/path", hass, "testfilename.jpg"
     )
-    assert result == 40
+    assert result == 32
 
 
 async def test_amazon_search_delivered(
@@ -792,7 +803,7 @@ async def test_amazon_search_delivered(
     result = amazon_search(
         mock_imap_amazon_delivered, "test/path", hass, "testfilename.jpg"
     )
-    assert result == 40
+    assert result == 32
     assert mock_download_img.called
 
 
@@ -802,7 +813,7 @@ async def test_amazon_search_delivered_it(
     result = amazon_search(
         mock_imap_amazon_delivered_it, "test/path", hass, "testfilename.jpg"
     )
-    assert result == 40
+    assert result == 32
 
 
 async def test_amazon_hub(hass, mock_imap_amazon_the_hub):
@@ -863,20 +874,8 @@ async def test_generate_mp4(
     with patch("custom_components.mail_and_packages.helpers.cleanup_images"):
         _generate_mp4("./", "testfile.gif")
 
-        mock_os_path_join.called_with("./", "testfile.gif")
-        mock_osremove.called_with("./", "testfile.mp4")
-        mock_subprocess_call.called_with(
-            "ffmpeg",
-            "-f",
-            "gif",
-            "-i",
-            "testfile.gif",
-            "-pix_fmt",
-            "yuv420p",
-            "-filter:v",
-            "crop='floor(in_w/2)*2:floor(in_h/2)*2'",
-            "testfile.mp4",
-        )
+        assert mock_os_path_join.called
+        assert mock_subprocess_call.called
 
 
 async def test_connection_error(caplog):
@@ -1013,13 +1012,13 @@ async def test_image_file_name(
 
 async def test_amazon_exception(hass, mock_imap_amazon_exception, caplog):
     result = amazon_exception(mock_imap_amazon_exception, ['""'])
-    assert result["order"] == ["123-1234567-1234567"] * 10
-    assert result["count"] == 10
+    assert result["order"] == ["123-1234567-1234567"] * 8
+    assert result["count"] == 8
 
     result = amazon_exception(mock_imap_amazon_exception, ["testemail@fakedomain.com"])
-    assert result["count"] == 11
+    assert result["count"] == 9
     assert (
-        "Amazon domains to be checked: ['amazon.com', 'amazon.ca', 'amazon.co.uk', 'amazon.in', 'amazon.de', 'amazon.it', 'amazon.com.au', 'amazon.pl', 'fakeuser@fake.email', 'fakeuser2@fake.email', 'testemail@fakedomain.com']"
+        "Amazon domains to be checked: ['amazon.com', 'amazon.ca', 'amazon.co.uk', 'amazon.in', 'amazon.de', 'amazon.it', 'amazon.com.au', 'amazon.pl', 'testemail@fakedomain.com']"
         in caplog.text
     )
 

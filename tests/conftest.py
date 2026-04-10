@@ -2,6 +2,7 @@
 import datetime
 import errno
 import imaplib
+import os as _real_os
 import time
 from datetime import timezone
 from unittest import mock
@@ -789,39 +790,58 @@ def mock_copyfile():
         yield mock_copyfile
 
 
+_real_listdir = _real_os.listdir
+
+# Path where the actual custom_components package lives (for integration discovery)
+try:
+    import custom_components as _cc
+
+    _CC_PATH = _cc.__path__[0]
+except ImportError:
+    _CC_PATH = None
+
+
+def _listdir_passthrough(path):
+    """Return True if os.listdir should use the real implementation for this path."""
+    return _CC_PATH is not None and str(path).startswith(_CC_PATH)
+
+
 @pytest.fixture
 def mock_listdir():
     """Fixture to mock listdir."""
-    with patch("os.listdir") as mock_listdir:
-        mock_listdir.return_value = [
-            "testfile.gif",
-            "anotherfakefile.mp4",
-            "lastfile.txt",
-        ]
+
+    def fake_listdir(path):
+        if _listdir_passthrough(path):
+            return _real_listdir(path)
+        return ["testfile.gif", "anotherfakefile.mp4", "lastfile.txt"]
+
+    with patch("os.listdir", side_effect=fake_listdir) as mock_listdir:
         yield mock_listdir
 
 
 @pytest.fixture
 def mock_listdir_nogif():
     """Fixture to mock listdir."""
-    with patch("os.listdir") as mock_listdir_nogif:
-        mock_listdir_nogif.return_value = [
-            "testfile.jpg",
-            "anotherfakefile.mp4",
-            "lastfile.txt",
-        ]
+
+    def fake_listdir(path):
+        if _listdir_passthrough(path):
+            return _real_listdir(path)
+        return ["testfile.jpg", "anotherfakefile.mp4", "lastfile.txt"]
+
+    with patch("os.listdir", side_effect=fake_listdir) as mock_listdir_nogif:
         yield mock_listdir_nogif
 
 
 @pytest.fixture
 def mock_listdir_noimgs():
     """Fixture to mock listdir."""
-    with patch("os.listdir") as mock_listdir_noimgs:
-        mock_listdir_noimgs.return_value = [
-            "testfile.xls",
-            "anotherfakefile.mp4",
-            "lastfile.txt",
-        ]
+
+    def fake_listdir(path):
+        if _listdir_passthrough(path):
+            return _real_listdir(path)
+        return ["testfile.xls", "anotherfakefile.mp4", "lastfile.txt"]
+
+    with patch("os.listdir", side_effect=fake_listdir) as mock_listdir_noimgs:
         yield mock_listdir_noimgs
 
 
