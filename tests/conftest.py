@@ -791,6 +791,8 @@ def mock_copyfile():
 
 
 _real_listdir = _real_os.listdir
+# Saved at import time so test fixtures can use the real function regardless of patches
+_real_path_join = _real_os.path.join
 
 # Path where the actual custom_components package lives (for integration discovery)
 try:
@@ -810,7 +812,7 @@ def _listdir_passthrough(path):
 def mock_listdir():
     """Fixture to mock listdir."""
 
-    def fake_listdir(path):
+    def fake_listdir(path="."):
         if _listdir_passthrough(path):
             return _real_listdir(path)
         return ["testfile.gif", "anotherfakefile.mp4", "lastfile.txt"]
@@ -823,7 +825,7 @@ def mock_listdir():
 def mock_listdir_nogif():
     """Fixture to mock listdir."""
 
-    def fake_listdir(path):
+    def fake_listdir(path="."):
         if _listdir_passthrough(path):
             return _real_listdir(path)
         return ["testfile.jpg", "anotherfakefile.mp4", "lastfile.txt"]
@@ -836,7 +838,7 @@ def mock_listdir_nogif():
 def mock_listdir_noimgs():
     """Fixture to mock listdir."""
 
-    def fake_listdir(path):
+    def fake_listdir(path="."):
         if _listdir_passthrough(path):
             return _real_listdir(path)
         return ["testfile.xls", "anotherfakefile.mp4", "lastfile.txt"]
@@ -974,6 +976,12 @@ def mock_subprocess_call():
     with patch("subprocess.call") as mock_subprocess_call:
 
         yield mock_subprocess_call
+
+
+@pytest.fixture
+def real_path_join():
+    """Provide the real os.path.join saved at module load time (before any patches)."""
+    return _real_path_join
 
 
 @pytest.fixture

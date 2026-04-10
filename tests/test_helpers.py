@@ -2,6 +2,7 @@
 
 import datetime
 import errno
+import subprocess
 from datetime import date, timezone
 from unittest import mock
 from unittest.mock import call, mock_open, patch
@@ -68,14 +69,16 @@ async def test_cleanup_found_images_remove_err(
 ):
     cleanup_images("/tests/fakedir/")
 
-    assert mock_osremove_exception.called
+    mock_osremove_exception.assert_any_call("/tests/fakedir/testfile.gif")
+    mock_osremove_exception.assert_any_call("/tests/fakedir/anotherfakefile.mp4")
+    assert mock_osremove_exception.call_count == 2
     assert "Error attempting to remove found image:" in caplog.text
 
 
 async def test_cleanup_images_remove_err(mock_listdir, mock_osremove_exception, caplog):
     cleanup_images("/tests/fakedir/", "testimage.jpg")
 
-    assert mock_osremove_exception.called
+    mock_osremove_exception.assert_called_once_with("/tests/fakedir/testimage.jpg")
     assert "Error attempting to remove image:" in caplog.text
 
 
@@ -664,7 +667,10 @@ async def test_informed_delivery_no_mail_copy_error(
         get_mails(
             mock_imap_usps_informed_digest_no_mail, "./", "5", "mail_today.gif", False
         )
-        assert mock_copyfile_exception.called
+        assert mock_copyfile_exception.call_count == 1
+        _, call_kwargs = mock_copyfile_exception.call_args
+        destination = call_kwargs.get("dst", mock_copyfile_exception.call_args[0][1])
+        assert destination.endswith("mail_today.gif")
         assert "File not found" in caplog.text
 
 
@@ -771,14 +777,14 @@ async def test_amazon_shipped_order_it(hass, mock_imap_amazon_shipped_it):
 async def test_amazon_shipped_order_it_count(hass, mock_imap_amazon_shipped_it):
     import locale
 
-    original_locale = locale.getlocale(locale.LC_TIME)
+    original_locale = locale.setlocale(locale.LC_TIME)
     try:
         locale.setlocale(locale.LC_TIME, "it_IT.UTF-8")
         expected = 1
     except locale.Error:
         expected = 0
     finally:
-        locale.setlocale(locale.LC_TIME, original_locale[0] or "")
+        locale.setlocale(locale.LC_TIME, original_locale)
 
     with patch("datetime.date") as mock_date:
         mock_date.today.return_value = date(2021, 12, 1)
@@ -870,13 +876,30 @@ async def test_amazon_shipped_order_exception(hass, mock_imap_amazon_shipped, ca
 
 
 async def test_generate_mp4(
-    mock_osremove, mock_os_path_join, mock_subprocess_call, mock_os_path_split
+    mock_osremove, mock_os_path_join, real_path_join, mock_subprocess_call, mock_os_path_split
 ):
+    mock_os_path_join.side_effect = real_path_join
     with patch("custom_components.mail_and_packages.helpers.cleanup_images"):
         _generate_mp4("./", "testfile.gif")
 
-        assert mock_os_path_join.called
-        assert mock_subprocess_call.called
+        mock_os_path_join.assert_any_call("./", "testfile.gif")
+        mock_os_path_join.assert_any_call("./", "testfile.mp4")
+        mock_subprocess_call.assert_called_once_with(
+            [
+                "ffmpeg",
+                "-f",
+                "gif",
+                "-i",
+                real_path_join("./", "testfile.gif"),
+                "-pix_fmt",
+                "yuv420p",
+                "-filter:v",
+                "crop='floor(in_w/2)*2:floor(in_h/2)*2'",
+                real_path_join("./", "testfile.mp4"),
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
 
 async def test_connection_error(caplog):
