@@ -208,26 +208,26 @@ def process_emails(hass: HomeAssistant, config: ConfigEntry) -> dict:
 
 def copy_images(hass: HomeAssistant, config: ConfigEntry) -> None:
     """Copy images to www directory if enabled.
-    
+
     Note: This function is now deprecated as images are stored directly
     in www/mail_and_packages/. It's kept for backward compatibility with
     configurations that have allow_external enabled.
     """
     src = f"{hass.config.path()}/{config.get(CONF_PATH)}"
     dst = f"{hass.config.path()}/www/mail_and_packages/"
-    
+
     # If source and destination are the same, no copy needed
     if os.path.normpath(src) == os.path.normpath(dst):
         _LOGGER.debug(
             "Source and destination paths are identical (%s), skipping copy", src
         )
         return
-    
+
     paths = []
     # Setup paths list
     paths.append(dst)
     paths.append(dst + "amazon/")
-    
+
     # Clean up the destination directory
     for path in paths:
         # Path check
@@ -239,7 +239,7 @@ def copy_images(hass: HomeAssistant, config: ConfigEntry) -> None:
                 _LOGGER.error("Problem creating: %s, error returned: %s", path, err)
                 return
         cleanup_images(path)
-    
+
     try:
         copytree(src, dst, dirs_exist_ok=True)
     except Exception as err:
@@ -1127,7 +1127,9 @@ async def download_img(img_url: str, img_path: str, img_name: str) -> None:
     img_path = f"{img_path}amazon/"
     filepath = f"{img_path}{img_name}"
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(
+        connector=aiohttp.TCPConnector(resolver=aiohttp.ThreadedResolver()),
+    ) as session:
         async with session.get(img_url.replace("&amp;", "&")) as resp:
             if resp.status != 200:
                 _LOGGER.error("Problem downloading file http error: %s", resp.status)
