@@ -120,17 +120,20 @@ class PackagesSensor(CoordinatorEntity, SensorEntity):
         data = self.coordinator.data
 
         # Catch no data entries
-        if self.data is None:
+        if data is None:
             return attr
 
         if "Amazon" in self._name:
-            if self._name == "amazon_exception":
-                attr[ATTR_ORDER] = data[AMAZON_EXCEPTION_ORDER]
+            if self.type == "amazon_exception":
+                if AMAZON_EXCEPTION_ORDER in data:
+                    attr[ATTR_ORDER] = data[AMAZON_EXCEPTION_ORDER]
             else:
-                attr[ATTR_ORDER] = data[AMAZON_ORDER]
+                if AMAZON_ORDER in data:
+                    attr[ATTR_ORDER] = data[AMAZON_ORDER]
         elif self._name == "Mail USPS Mail":
-            attr[ATTR_IMAGE] = data[ATTR_IMAGE_NAME]
-        elif "_delivering" in self.type and tracking in self.data.keys():
+            if ATTR_IMAGE_NAME in data:
+                attr[ATTR_IMAGE] = data[ATTR_IMAGE_NAME]
+        elif "_delivering" in self.type and tracking in data.keys():
             attr[ATTR_TRACKING_NUM] = data[tracking]
             # TODO: Add Tracking URL when applicable
         return attr
@@ -180,8 +183,11 @@ class ImagePathSensors(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self) -> Optional[str]:
         """Return the state of the sensor."""
-        image = self.coordinator.data[ATTR_IMAGE_NAME]
+        image = self.coordinator.data.get(ATTR_IMAGE_NAME)
         the_path = None
+
+        if image is None:
+            return None
 
         if ATTR_IMAGE_PATH in self.coordinator.data.keys():
             path = self.coordinator.data[ATTR_IMAGE_PATH]
