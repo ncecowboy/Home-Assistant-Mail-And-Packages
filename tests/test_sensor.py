@@ -141,7 +141,7 @@ async def test_sensor(hass, mock_update):
 
     state = hass.states.get("sensor.mail_gls_delivered")
     assert state
-    assert state.state == "2"
+    assert state.state == "5"
 
     state = hass.states.get("sensor.mail_gls_delivering")
     assert state

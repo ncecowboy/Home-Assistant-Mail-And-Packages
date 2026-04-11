@@ -124,7 +124,7 @@ class PackagesSensor(CoordinatorEntity, SensorEntity):
             return attr
 
         if "Amazon" in self._name:
-            if self._name == "amazon_exception":
+            if self.type == "amazon_exception":
                 if AMAZON_EXCEPTION_ORDER in data:
                     attr[ATTR_ORDER] = data[AMAZON_EXCEPTION_ORDER]
             else:

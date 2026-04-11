@@ -505,7 +505,7 @@ FAKE_UPDATE_DATA = {
     "dpd_com_pl_delivering": 1,
     "dpd_com_pl_packages": 3,
     "dpd_com_pl_tracking": ["13490015284111"],
-    "gls_delivered": 2,
+    "gls_delivered": 5,
     "gls_delivering": 1,
     "gls_packages": 3,
     "gls_tracking": ["51687952111"],
