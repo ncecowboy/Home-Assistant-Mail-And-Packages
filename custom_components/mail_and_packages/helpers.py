@@ -1127,7 +1127,9 @@ async def download_img(img_url: str, img_path: str, img_name: str) -> None:
     img_path = f"{img_path}amazon/"
     filepath = f"{img_path}{img_name}"
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(
+        connector=aiohttp.TCPConnector(resolver=aiohttp.ThreadedResolver())
+    ) as session:
         async with session.get(img_url.replace("&amp;", "&")) as resp:
             if resp.status != 200:
                 _LOGGER.error("Problem downloading file http error: %s", resp.status)
